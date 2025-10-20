@@ -342,7 +342,7 @@ const onSubmit = (e) => {
 
           <div className="md:col-span-2">
             <label className="text-sm font-medium">Datos de contacto</label>
-            <input name="contacto" required placeholder="Ej: +54 9 11 ..." className="mt-1 w-full rounded-xl border px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-600" />
+            <input name="contacto" required placeholder="Ej: +54 9 11 1234 5678" className="mt-1 w-full rounded-xl border px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-600" />
           </div>
 
           <div className="md:col-span-2">
