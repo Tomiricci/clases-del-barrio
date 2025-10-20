@@ -5,6 +5,9 @@ import { useState } from 'react'
 const CONTACT_EMAIL = ""        // correo de recepción
 const WHATSAPP_NUMBER = "+5491123843568"   // con código de país, sin espacios
 const GOOGLE_FORMS_URL = ""                // opcional: link a tu Google Forms
+const PRICE_60  = 30000;  // ARS - Clase de 1 hora
+const PRICE_90  = 40000;  // ARS - Clase de 1 hora y media
+const PRICE_120 = 50000;  // ARS - Clase de 2 horas
 
 export default function App() {
   const scrollTo = (id) => {
@@ -18,6 +21,7 @@ export default function App() {
       <Hero onCTA={() => scrollTo('reserva')} />
       <About id="nosotros" />
       <Subjects id="materias" />
+      <Pricing id="precios" />
       <HowItWorks id="como-funciona" />
       <Testimonials id="testimonios" />
       <ContactForm id="reserva" />
@@ -150,6 +154,37 @@ function Subjects({ id }) {
   )
 }
 
+function Pricing({ id }) {
+  const items = [
+    { t: 'Clase de 1 hora',      mins: 60,  price: PRICE_60,  desc: 'Ideal para refuerzo puntual y tareas.' },
+    { t: 'Clase de 1 hora y 30', mins: 90,  price: PRICE_90,  desc: 'Tiempo extra para preparar pruebas.' },
+    { t: 'Clase de 2 horas',     mins: 120, price: PRICE_120, desc: 'Sesión completa con práctica guiada.' },
+  ];
+
+  const format = (n) => n.toLocaleString('es-AR', { style: 'currency', currency: 'ARS' });
+
+  return (
+    <section id={id} className="bg-white/60 py-14 md:py-20 border-t">
+      <div className="mx-auto max-w-6xl px-4">
+        <h2 className="text-2xl md:text-3xl font-bold text-slate-900 mb-8">Precios</h2>
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+          {items.map((it) => (
+            <div key={it.mins} className="rounded-3xl border bg-white p-6 shadow-sm hover:shadow-md transition">
+              <h3 className="font-semibold text-slate-900">{it.t}</h3>
+              <p className="mt-1 text-sm text-slate-600">{it.desc}</p>
+              <p className="mt-4 text-3xl font-extrabold text-slate-900">{format(it.price)}</p>
+              <p className="text-xs text-slate-500 mt-1">a domicilio / zona barrio</p>
+              <a href="#reserva" className="mt-5 inline-block rounded-2xl bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 text-sm font-medium shadow-sm">
+                Reservar esta clase
+              </a>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
 function HowItWorks({ id }) {
   const steps = [
     { n: 1, t: 'Reservá tu clase', d: 'Completá el formulario con la materia y horario preferido.' },
@@ -206,21 +241,31 @@ const onSubmit = (e) => {
   const nombre = form.get('nombre')
   const edad = form.get('edad')
   const materia = form.get('materia')
+  const tipoClase = form.get('tipoClase'); // 60 | 90 | 120
   const fecha = form.get('fecha')
   const hora = form.get('hora')
   const direccion = form.get('direccion')
   const contacto = form.get('contacto')
   const comentarios = form.get('comentarios') || ''
 
+  const priceMap = { '60': PRICE_60, '90': PRICE_90, '120': PRICE_120 };
+  const precio = priceMap[tipoClase] ?? 0;
+
+  const etiquetaTipo = tipoClase === '60' ? '1 hora'
+    : tipoClase === '90' ? '1 hora y media'
+    : '2 horas';
+
   const resumen =
-    `Nueva reserva — Clases del Barrio%0A%0A` +
-    `Nombre: ${nombre}%0A` +
-    `Edad: ${edad}%0A` +
-    `Materia: ${materia}%0A` +
-    `Día/hora preferida: ${fecha} ${hora}%0A` +
-    `Dirección: ${direccion}%0A` +
-    `Contacto: ${contacto}%0A` +
-    `Comentarios: ${comentarios}`
+  `Nueva reserva — Clases del Barrio%0A%0A` +
+  `Tipo de clase: ${etiquetaTipo} (${precio.toLocaleString('es-AR',{style:'currency',currency:'ARS'})})%0A` +
+  `Nombre: ${nombre}%0A` +
+  `Edad: ${edad}%0A` +
+  `Materia: ${materia}%0A` +
+  `Día/hora preferida: ${fecha} ${hora}%0A` +
+  `Dirección: ${direccion}%0A` +
+  `Contacto: ${contacto}%0A` +
+  `Comentarios: ${comentarios}`;
+
 
   // 👉 Fuerza WhatsApp SIEMPRE
   const waNumber = WHATSAPP_NUMBER.replace(/[^\d]/g, '')
@@ -255,6 +300,17 @@ const onSubmit = (e) => {
               {subjects.map((s) => <option key={s} value={s}>{s}</option>)}
             </select>
           </div>
+
+          <div>
+            <label className="text-sm font-medium">Tipo de clase</label>
+            <select name="tipoClase" required className="mt-1 w-full rounded-xl border px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-600">
+              <option value="">Elegí duración</option>
+              <option value="60">1 hora</option>
+              <option value="90">1 hora y media</option>
+              <option value="120">2 horas</option>
+            </select>
+          </div>
+
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 w-full">
             <div className="min-w-0 max-w-full">
