@@ -154,6 +154,30 @@ function Subjects({ id }) {
   )
 }
 
+
+
+function HowItWorks({ id }) {
+  const steps = [
+    { n: 1, t: 'Reservá tu clase', d: 'Completá el formulario con la materia y horario preferido.' },
+    { n: 2, t: 'Te contactamos', d: 'Coordinamos detalles por WhatsApp o email.' },
+    { n: 3, t: 'Vamos a tu casa o online', d: 'Llegamos puntuales con plan de clase personalizado.' },
+  ]
+  return (
+    <section id={id} className="mx-auto max-w-6xl px-4 py-14 md:py-20">
+      <h2 className="text-2xl md:text-3xl font-bold text-slate-900 mb-8">Cómo funciona</h2>
+      <div className="grid md:grid-cols-3 gap-5">
+        {steps.map((s) => (
+          <div key={s.n} className="rounded-3xl border bg-white p-6 shadow-sm">
+            <div className="w-10 h-10 rounded-full bg-blue-600 text-white grid place-items-center font-bold">{s.n}</div>
+            <h3 className="mt-3 font-semibold text-slate-900">{s.t}</h3>
+            <p className="text-sm text-slate-600 mt-1">{s.d}</p>
+          </div>
+        ))}
+      </div>
+    </section>
+  )
+}
+
 function Pricing({ id }) {
   const items = [
     { t: 'Clase de 1 hora',      mins: 60,  price: PRICE_60,  desc: 'Ideal para refuerzo puntual y tareas.' },
@@ -183,28 +207,6 @@ function Pricing({ id }) {
       </div>
     </section>
   );
-}
-
-function HowItWorks({ id }) {
-  const steps = [
-    { n: 1, t: 'Reservá tu clase', d: 'Completá el formulario con la materia y horario preferido.' },
-    { n: 2, t: 'Te contactamos', d: 'Coordinamos detalles por WhatsApp o email.' },
-    { n: 3, t: 'Vamos a tu casa o online', d: 'Llegamos puntuales con plan de clase personalizado.' },
-  ]
-  return (
-    <section id={id} className="mx-auto max-w-6xl px-4 py-14 md:py-20">
-      <h2 className="text-2xl md:text-3xl font-bold text-slate-900 mb-8">Cómo funciona</h2>
-      <div className="grid md:grid-cols-3 gap-5">
-        {steps.map((s) => (
-          <div key={s.n} className="rounded-3xl border bg-white p-6 shadow-sm">
-            <div className="w-10 h-10 rounded-full bg-blue-600 text-white grid place-items-center font-bold">{s.n}</div>
-            <h3 className="mt-3 font-semibold text-slate-900">{s.t}</h3>
-            <p className="text-sm text-slate-600 mt-1">{s.d}</p>
-          </div>
-        ))}
-      </div>
-    </section>
-  )
 }
 
 function Testimonials({ id }) {
