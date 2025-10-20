@@ -256,14 +256,24 @@ const onSubmit = (e) => {
             </select>
           </div>
 
-          <div className="grid grid-cols-2 gap-3">
-            <div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 w-full">
+            <div className="min-w-0 max-w-full">
               <label className="text-sm font-medium">Día</label>
-              <input name="fecha" type="date" required className="mt-1 w-full rounded-xl border px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-600" />
+              <input
+                name="fecha"
+                type="date"
+                required
+                className="mt-1 block w-full min-w-0 max-w-full rounded-xl border px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-600"
+              />
             </div>
-            <div>
+            <div className="min-w-0 max-w-full">
               <label className="text-sm font-medium">Hora</label>
-              <input name="hora" type="time" required className="mt-1 w-full rounded-xl border px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-600" />
+              <input
+                name="hora"
+                type="time"
+                required
+                className="mt-1 block w-full min-w-0 max-w-full rounded-xl border px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-600"
+              />
             </div>
           </div>
 
