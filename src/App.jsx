@@ -436,15 +436,38 @@ function WhatsAppFloating() {
 }
 
 function IllustrationBooks() {
+  const SHIFT = 6; // solo cajas y textos, la línea no se mueve
+
+  const r1 = { x: 20,  y: 120, w: 80,  h: 50,  fill: '#bfdbfe', label: 'Matemática' };
+  const r2 = { x: 110, y: 100, w: 90,  h: 70,  fill: '#bbf7d0', label: 'Lengua' };
+  const r3 = { x: 210, y: 80,  w: 70,  h: 90,  fill: '#fef08a', label: 'Ciencias' };
+  const baselineY = 170; // NO se toca
+
+  const Box = ({ x, y, w, h, fill, label }) => (
+    <>
+      <rect x={x} y={y - SHIFT} width={w} height={h} rx="8" fill={fill} />
+      <text
+        x={x + w / 2}
+        y={y - SHIFT + h / 2}
+        textAnchor="middle"
+        dominantBaseline="middle"
+        fontSize="12"
+        fontWeight="600"
+        fill="#334155"
+        style={{ fontFamily: 'Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif' }}
+      >
+        {label}
+      </text>
+    </>
+  );
+
   return (
-    <svg viewBox="0 0 300 200" className="w-full h-auto text-blue-600" aria-hidden>
-      <rect x="20" y="120" width="80" height="50" rx="8" className="fill-blue-200" />
-      <rect x="110" y="100" width="90" height="70" rx="8" className="fill-green-200" />
-      <rect x="210" y="80" width="70" height="90" rx="8" className="fill-yellow-200" />
-      <line x1="20" y1="170" x2="280" y2="170" className="stroke-slate-300" strokeWidth="4" />
-      <text x="30" y="150" className="fill-slate-700" fontSize="12">Matemática</text>
-      <text x="120" y="130" className="fill-slate-700" fontSize="12">Lengua</text>
-      <text x="220" y="110" className="fill-slate-700" fontSize="12">Ciencias</text>
+    <svg viewBox="0 0 300 200" className="w-full h-auto" aria-hidden>
+      <Box {...r1} />
+      <Box {...r2} />
+      <Box {...r3} />
+      {/* Línea base sin mover */}
+      <line x1="20" y1={baselineY} x2="280" y2={baselineY} stroke="#cbd5e1" strokeWidth="4" />
     </svg>
-  )
+  );
 }
