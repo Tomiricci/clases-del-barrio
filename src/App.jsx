@@ -81,10 +81,10 @@ function Hero({ onCTA }) {
             </a>
           </div>
           <ul className="mt-6 grid grid-cols-2 gap-3 text-sm text-slate-600">
-            <li>✅ Apoyo en tareas</li>
-            <li>✅ Preparación para pruebas</li>
-            <li>✅ Seguimiento personalizado</li>
-            <li>✅ A domicilio o online</li>
+            <li>Apoyo en tareas</li>
+            <li>Preparación para pruebas</li>
+            <li>Seguimiento personalizado</li>
+            <li>A domicilio o online</li>
           </ul>
         </div>
         <div className="relative">
