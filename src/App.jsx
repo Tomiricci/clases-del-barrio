@@ -37,7 +37,7 @@ function Header({ onNav }) {
       <div className="mx-auto max-w-6xl px-4 py-3 flex items-center justify-between">
         <div className="flex items-center gap-3">
           <Logo />
-          <span className="font-semibold text-slate-900">Clases del Barrio</span>
+          <span className="font-semibold text-slate-900">Educando</span>
         </div>
         <nav className="hidden md:flex items-center gap-6 text-sm">
           <button className="hover:text-blue-700" onClick={() => onNav('nosotros')}>Quiénes somos</button>
