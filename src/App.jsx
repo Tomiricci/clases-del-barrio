@@ -55,8 +55,11 @@ function Header({ onNav }) {
 
 function Logo() {
   return (
-    <div className="w-9 h-9 rounded-2xl bg-gradient-to-tr from-blue-500 to-green-400 grid place-items-center shadow-sm">
-      <span className="text-white font-bold">CB</span>
+    <div className="w-9 h-9 rounded-2xl bg-gradient-to-tr from-blue-600 to-green-500 grid place-items-center shadow-sm">
+      <span className="text-white font-extrabold tracking-tight">ED</span>
+      {/* Si preferís "ED", reemplazá la línea de arriba por:
+      <span className="text-white font-extrabold tracking-tight text-[0.9rem]">ED</span>
+      */}
     </div>
   )
 }
@@ -374,7 +377,7 @@ function Footer() {
           <div className="flex items-center gap-3">
             <Logo />
             <div>
-              <p className="font-semibold text-slate-900">Clases del Barrio</p>
+              <p className="font-semibold text-slate-900">Educando</p>
               <p className="text-sm text-slate-600">Exalumnos del Colegio Cardenal Newman</p>
             </div>
           </div>
@@ -403,7 +406,7 @@ function Footer() {
       </div>
       <div className="border-t">
         <div className="mx-auto max-w-6xl px-4 py-6 flex flex-col md:flex-row items-center justify-between gap-3 text-sm text-slate-600">
-          <p>Clases del Barrio © 2025 – Exalumnos del Colegio Cardenal Newman</p>
+          <p>Educando © 2025 – Exalumnos del Colegio Cardenal Newman</p>
           <div className="flex items-center gap-3">
             <a className="hover:underline" href="#">Instagram</a>
             <a className="hover:underline" href="#">Facebook</a>
@@ -417,7 +420,7 @@ function Footer() {
 
 function WhatsAppFloating() {
   if (!WHATSAPP_NUMBER) return null
-  const msg = encodeURIComponent('Hola, quiero reservar una clase para un alumno del Newman')
+  const msg = encodeURIComponent('Hola, quiero reservar una clase con Educando')
   const href = `https://wa.me/${WHATSAPP_NUMBER.replace(/[^\d]/g, '')}?text=${msg}`
   return (
     <a
