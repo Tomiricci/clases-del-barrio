@@ -53,16 +53,27 @@ function Header({ onNav }) {
   )
 }
 
-function Logo() {
+function Logo({ size = 36 }) {
+  const logoUrl = import.meta.env.BASE_URL + 'educando-favicon.svg';
   return (
-    <div className="w-9 h-9 rounded-2xl bg-gradient-to-tr from-blue-600 to-green-500 grid place-items-center shadow-sm">
-      <span className="text-white font-extrabold tracking-tight">ED</span>
-      {/* Si preferís "ED", reemplazá la línea de arriba por:
-      <span className="text-white font-extrabold tracking-tight text-[0.9rem]">ED</span>
-      */}
+    <div
+      style={{ width: size, height: size }}
+      className="rounded-full overflow-hidden"
+      aria-label="Logo Educando"
+      title="Educando"
+    >
+      <img
+        src={logoUrl}
+        alt="Educando"
+        className="w-full h-full object-cover block"
+        loading="lazy"
+      />
     </div>
-  )
+  );
 }
+
+
+
 
 function Hero({ onCTA }) {
   return (
