@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
 // ====== VARIABLES EDITABLES ======
 // Completá con tus datos reales:
@@ -14,6 +14,70 @@ export default function App() {
     const el = document.getElementById(id)
     if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' })
   }
+  // Secciones en orden para el swipe:
+  const sectionsOrder = ['hero', 'nosotros', 'materias', 'precios', 'como-funciona', 'reserva']
+
+  // Ayuda: ir a una sección por id
+  const scrollToId = (id) => {
+    const el = document.getElementById(id)
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  }
+
+  // Detectar sección “actual” (la más centrada)
+  const getCurrentIndex = () => {
+    const mid = window.innerHeight / 2
+    let bestIdx = 0
+    let bestDist = Infinity
+    sectionsOrder.forEach((id, i) => {
+      const el = document.getElementById(id)
+      if (!el) return
+      const rect = el.getBoundingClientRect()
+      const center = rect.top + rect.height / 2
+      const dist = Math.abs(center - mid)
+      if (dist < bestDist) {
+        bestDist = dist
+        bestIdx = i
+      }
+    })
+    return bestIdx
+  }
+
+  // Swipe en móvil (touch)
+  useEffect(() => {
+    let startY = 0
+    const THRESHOLD = 60 // píxeles de desliz mínimo
+
+    const onTouchStart = (e) => { startY = e.touches[0].clientY }
+    const onTouchEnd = (e) => {
+      const endY = e.changedTouches[0].clientY
+      const delta = endY - startY
+      if (Math.abs(delta) < THRESHOLD) return
+
+      const idx = getCurrentIndex()
+      if (delta < 0 && idx < sectionsOrder.length - 1) {
+        // deslizó hacia arriba -> próxima sección
+        scrollToId(sectionsOrder[idx + 1])
+      } else if (delta > 0 && idx > 0) {
+        // deslizó hacia abajo -> sección anterior
+        scrollToId(sectionsOrder[idx - 1])
+      }
+    }
+
+    // Solo activar en pantallas chicas (opcional)
+    const enable = () => window.innerWidth < 768
+
+    const root = document // escuchamos en todo el documento
+    const start = (e) => { if (enable()) onTouchStart(e) }
+    const end = (e) => { if (enable()) onTouchEnd(e) }
+
+    root.addEventListener('touchstart', start, { passive: true })
+    root.addEventListener('touchend', end, { passive: true })
+    return () => {
+      root.removeEventListener('touchstart', start)
+      root.removeEventListener('touchend', end)
+    }
+  }, [])
+
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-white to-blue-50 text-slate-800">
@@ -34,6 +98,13 @@ export default function App() {
 }
 
 function Header({ onNav }) {
+  const [open, setOpen] = useState(false)
+
+  const go = (id) => {
+    onNav(id)
+    setOpen(false)
+  }
+
   return (
     <header className="sticky top-0 z-40 backdrop-blur supports-[backdrop-filter]:bg-white/70 bg-white/80 border-b">
       <div className="mx-auto max-w-6xl px-4 py-3 flex items-center justify-between">
@@ -41,19 +112,58 @@ function Header({ onNav }) {
           <Logo />
           <span className="font-semibold text-slate-900">Educando</span>
         </div>
+
+        {/* Navegación desktop */}
         <nav className="hidden md:flex items-center gap-6 text-sm">
-          <button className="hover:text-blue-700" onClick={() => onNav('nosotros')}>Quiénes somos</button>
-          <button className="hover:text-blue-700" onClick={() => onNav('materias')}>Materias</button>
-          <button className="hover:text-blue-700" onClick={() => onNav('como-funciona')}>Cómo funciona</button>
-          <button className="hover:text-blue-700" onClick={() => onNav('reserva')}>Reservar</button>
+          <button className="hover:text-blue-700" onClick={() => go('nosotros')}>Quiénes somos</button>
+          <button className="hover:text-blue-700" onClick={() => go('materias')}>Materias</button>
+          <button className="hover:text-blue-700" onClick={() => go('precios')}>Precios</button>
+          <button className="hover:text-blue-700" onClick={() => go('como-funciona')}>Cómo funciona</button>
+          <button className="hover:text-blue-700" onClick={() => go('reserva')}>Reservar</button>
         </nav>
-        <button onClick={() => onNav('reserva')} className="hidden md:inline-flex rounded-2xl bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 text-sm font-medium shadow-sm">
-          Reservar una clase
+
+        {/* CTA desktop */}
+        <button onClick={() => go('reserva')} className="hidden md:inline-flex rounded-2xl bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 text-sm font-medium shadow-sm">
+          Reservar
+        </button>
+
+        {/* Botón hamburguesa móvil */}
+        <button
+          className="md:hidden inline-flex items-center justify-center w-10 h-10 rounded-xl border bg-white"
+          aria-label="Abrir menú"
+          onClick={() => setOpen(true)}
+        >
+          {/* tres rayitas */}
+          <span className="block w-6 h-px bg-slate-900 mb-1"></span>
+          <span className="block w-6 h-px bg-slate-900 mb-1"></span>
+          <span className="block w-6 h-px bg-slate-900"></span>
         </button>
       </div>
+
+      {/* Menú móvil (overlay) */}
+      {open && (
+        <div className="md:hidden fixed inset-0 z-50">
+          <div className="absolute inset-0 bg-black/40" onClick={() => setOpen(false)} aria-hidden="true"></div>
+          <div className="ml-auto h-full w-72 bg-white shadow-xl p-5 flex flex-col gap-2">
+            <div className="flex items-center justify-between mb-2">
+              <div className="flex items-center gap-2">
+                <Logo />
+                <span className="font-semibold">Educando</span>
+              </div>
+              <button className="w-9 h-9 grid place-items-center rounded-lg border" onClick={() => setOpen(false)} aria-label="Cerrar menú">✕</button>
+            </div>
+            <button className="py-2 text-left hover:text-blue-700" onClick={() => go('nosotros')}>Quiénes somos</button>
+            <button className="py-2 text-left hover:text-blue-700" onClick={() => go('materias')}>Materias</button>
+            <button className="py-2 text-left hover:text-blue-700" onClick={() => go('precios')}>Precios</button>
+            <button className="py-2 text-left hover:text-blue-700" onClick={() => go('como-funciona')}>Cómo funciona</button>
+            <button className="mt-3 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 text-sm font-medium shadow" onClick={() => go('reserva')}>Reservar</button>
+          </div>
+        </div>
+      )}
     </header>
   )
 }
+
 
 function Logo({ size = 36 }) {
   const logoUrl = import.meta.env.BASE_URL + 'educando-favicon.svg';
@@ -79,7 +189,7 @@ function Logo({ size = 36 }) {
 
 function Hero({ onCTA }) {
   return (
-  <section className="relative overflow-hidden">
+<section id="hero" className="relative overflow-hidden">
       <div className="mx-auto max-w-6xl px-4 py-16 md:py-24 grid md:grid-cols-2 gap-10 items-center">
         <div>
           <h1 className="text-3xl md:text-5xl font-extrabold leading-tight text-slate-900">
