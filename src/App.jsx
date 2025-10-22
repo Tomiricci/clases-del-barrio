@@ -14,69 +14,6 @@ export default function App() {
     const el = document.getElementById(id)
     if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' })
   }
-  // Secciones en orden para el swipe:
-  const sectionsOrder = ['hero', 'nosotros', 'materias', 'precios', 'como-funciona', 'reserva']
-
-  // Ayuda: ir a una sección por id
-  const scrollToId = (id) => {
-    const el = document.getElementById(id)
-    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' })
-  }
-
-  // Detectar sección “actual” (la más centrada)
-  const getCurrentIndex = () => {
-    const mid = window.innerHeight / 2
-    let bestIdx = 0
-    let bestDist = Infinity
-    sectionsOrder.forEach((id, i) => {
-      const el = document.getElementById(id)
-      if (!el) return
-      const rect = el.getBoundingClientRect()
-      const center = rect.top + rect.height / 2
-      const dist = Math.abs(center - mid)
-      if (dist < bestDist) {
-        bestDist = dist
-        bestIdx = i
-      }
-    })
-    return bestIdx
-  }
-
-  // Swipe en móvil (touch)
-  useEffect(() => {
-    let startY = 0
-    const THRESHOLD = 60 // píxeles de desliz mínimo
-
-    const onTouchStart = (e) => { startY = e.touches[0].clientY }
-    const onTouchEnd = (e) => {
-      const endY = e.changedTouches[0].clientY
-      const delta = endY - startY
-      if (Math.abs(delta) < THRESHOLD) return
-
-      const idx = getCurrentIndex()
-      if (delta < 0 && idx < sectionsOrder.length - 1) {
-        // deslizó hacia arriba -> próxima sección
-        scrollToId(sectionsOrder[idx + 1])
-      } else if (delta > 0 && idx > 0) {
-        // deslizó hacia abajo -> sección anterior
-        scrollToId(sectionsOrder[idx - 1])
-      }
-    }
-
-    // Solo activar en pantallas chicas (opcional)
-    const enable = () => window.innerWidth < 768
-
-    const root = document // escuchamos en todo el documento
-    const start = (e) => { if (enable()) onTouchStart(e) }
-    const end = (e) => { if (enable()) onTouchEnd(e) }
-
-    root.addEventListener('touchstart', start, { passive: true })
-    root.addEventListener('touchend', end, { passive: true })
-    return () => {
-      root.removeEventListener('touchstart', start)
-      root.removeEventListener('touchend', end)
-    }
-  }, [])
 
 
   return (
