@@ -262,25 +262,41 @@ function About({ id }) {
           <p className="mt-3 text-slate-700">Damos clases personalizadas, adaptadas al ritmo de cada alumno, y coordinamos horarios flexibles en el barrio.</p>
         </div>
         <div className="grid grid-cols-2 gap-4">
-          <ProfileCard nombre="Tomás Ricci Brochiero" descripcion="Exalumno Newman • Est. UDESA" />
-          <ProfileCard nombre="Santiago Pereyra Iraola" descripcion="Exalumno Newman • Est. UTDT" />
+          <ProfileCard
+            nombre="Tomás Ricci Brochiero"
+            descripcion="Exalumno Newman • Est. UDESA"
+            img="tomi.jpeg"        // ← archivo en /public
+          />
+          <ProfileCard
+            nombre="Santiago Pereyra Iraola"
+            descripcion="Exalumno Newman • Est. UTDT"
+            img="santi.jpg"        // ← archivo en /public
+          />
         </div>
       </div>
     </section>
   )
 }
 
-function ProfileCard({ nombre, descripcion }) {
+function ProfileCard({ nombre, descripcion, img }) {
+  // Usa BASE_URL para que funcione en GitHub Pages o dominio propio
+  const src = import.meta.env.BASE_URL + img
   return (
     <div className="rounded-3xl border bg-white p-5 shadow-sm">
-      <div className="aspect-square rounded-2xl bg-gradient-to-br from-blue-100 to-green-100 grid place-items-center mb-4">
-        <span className="text-4xl" role="img" aria-label="avatar">🎓</span>
+      <div className="aspect-square rounded-2xl overflow-hidden bg-slate-100 mb-4">
+        <img
+          src={src}
+          alt={nombre}
+          className="w-full h-full object-cover block"
+          loading="lazy"
+        />
       </div>
       <h3 className="font-semibold text-slate-900">{nombre}</h3>
       <p className="text-sm text-slate-600 mt-1">{descripcion}</p>
     </div>
   )
 }
+
 
 function Subjects({ id }) {
   const items = [
@@ -411,7 +427,7 @@ const onSubmit = (e) => {
     : '2 horas';
 
   const resumen =
-  `Nueva reserva — Clases del Barrio%0A%0A` +
+  `Nueva reserva — Educando` +
   `Tipo de clase: ${etiquetaTipo} (${precio.toLocaleString('es-AR',{style:'currency',currency:'ARS'})})%0A` +
   `Nombre: ${nombre}%0A` +
   `Edad: ${edad}%0A` +
@@ -444,8 +460,8 @@ const onSubmit = (e) => {
             <input name="nombre" required placeholder="Ej: Juan Pérez" className="mt-1 w-full rounded-xl border px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-600" />
           </div>
           <div>
-            <label className="text-sm font-medium">Edad</label>
-            <input name="edad" type="number" min="5" max="13" required placeholder="Ej: 9" className="mt-1 w-full rounded-xl border px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-600" />
+            <label className="text-sm font-medium">Grado</label>
+            <input name="edad" type="number" min="1" max="6" required placeholder="Ej: 9" className="mt-1 w-full rounded-xl border px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-600" />
           </div>
 
           <div>
