@@ -19,10 +19,13 @@ export default function App() {
     <div className="min-h-screen bg-gradient-to-b from-white to-blue-50 text-slate-800">
       <Header onNav={scrollTo} />
       <Hero onCTA={() => scrollTo('reserva')} />
+      <div className="w-full border-t border-slate-900"></div>
       <About id="nosotros" />
       <Subjects id="materias" />
       <Pricing id="precios" />
+      <div className="w-full border-t border-slate-900"></div>
       <HowItWorks id="como-funciona" />
+      <div className="w-full border-t border-slate-900"></div>
       <ContactForm id="reserva" />
       <Footer />
       <WhatsAppFloating />
@@ -76,7 +79,7 @@ function Logo({ size = 36 }) {
 
 function Hero({ onCTA }) {
   return (
-    <section className="relative overflow-hidden">
+  <section className="relative overflow-hidden">
       <div className="mx-auto max-w-6xl px-4 py-16 md:py-24 grid md:grid-cols-2 gap-10 items-center">
         <div>
           <h1 className="text-3xl md:text-5xl font-extrabold leading-tight text-slate-900">
@@ -93,12 +96,6 @@ function Hero({ onCTA }) {
               Ver materias
             </a>
           </div>
-          <ul className="mt-6 grid grid-cols-2 gap-3 text-sm text-slate-600">
-            <li>Apoyo en tareas</li>
-            <li>Preparación para pruebas</li>
-            <li>Seguimiento personalizado</li>
-            <li>A domicilio o online</li>
-          </ul>
         </div>
         <div className="relative">
           <div className="aspect-[4/3] w-full rounded-3xl bg-gradient-to-tr from-yellow-100 to-green-100 border shadow-inner grid place-items-center p-6">
