@@ -23,7 +23,6 @@ export default function App() {
       <Subjects id="materias" />
       <Pricing id="precios" />
       <HowItWorks id="como-funciona" />
-      <Testimonials id="testimonios" />
       <ContactForm id="reserva" />
       <Footer />
       <WhatsAppFloating />
