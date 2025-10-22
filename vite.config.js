@@ -4,5 +4,5 @@ import tailwindcss from '@tailwindcss/vite'
 
 export default defineConfig({
   plugins: [react(), tailwindcss()],
-  base: '/clases-del-barrio/', // <- reemplazalo por el nombre real del repo
+  base: '/educando/', // <- reemplazalo por el nombre real del repo
 })
