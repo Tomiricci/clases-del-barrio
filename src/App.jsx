@@ -438,7 +438,7 @@ const onSubmit = (e) => {
   `Comentarios: ${comentarios}`;
 
 
-  // 👉 Fuerza WhatsApp SIEMPRE
+  // Fuerza WhatsApp SIEMPRE
   const waNumber = WHATSAPP_NUMBER.replace(/[^\d]/g, '')
   const waUrl = `https://wa.me/${waNumber}?text=${resumen}`
 
