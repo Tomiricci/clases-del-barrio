@@ -105,8 +105,67 @@ function Header({ onNav }) {
     setOpen(false)
   }
 
+  // Bloquear scroll de fondo y cerrar con ESC
+ // Swipe en móvil (touch) — solo cambia de sección en los bordes
+useEffect(() => {
+  let startY = 0
+  let startScroll = 0
+  let scrolledDuringGesture = false
+  const THRESHOLD = 70   // distancia mínima del gesto
+  const EDGE = 12        // “cerca del borde” en px
+
+  const atTop = () => window.scrollY <= EDGE
+  const atBottom = () => {
+    const { scrollY, innerHeight } = window
+    const { scrollHeight } = document.documentElement
+    return scrollY + innerHeight >= scrollHeight - EDGE
+  }
+
+  const onTouchStart = (e) => {
+    startY = e.touches[0].clientY
+    startScroll = window.scrollY
+    scrolledDuringGesture = false
+  }
+
+  const onTouchMove = () => {
+    // si el usuario está scrolleando contenido, cancelamos el swipe
+    if (Math.abs(window.scrollY - startScroll) > 10) scrolledDuringGesture = true
+  }
+
+  const onTouchEnd = (e) => {
+    if (scrolledDuringGesture) return // priorizar scroll normal
+    const endY = e.changedTouches[0].clientY
+    const delta = endY - startY
+    if (Math.abs(delta) < THRESHOLD) return
+
+    const idx = getCurrentIndex()
+    // solo permitir si estás en el borde correspondiente
+    if (delta < 0 && atBottom() && idx < sectionsOrder.length - 1) {
+      scrollToId(sectionsOrder[idx + 1]) // swipe arriba → próxima sección
+    } else if (delta > 0 && atTop() && idx > 0) {
+      scrollToId(sectionsOrder[idx - 1]) // swipe abajo → sección anterior
+    }
+  }
+
+  const enable = () => window.innerWidth < 768
+
+  const start = (e) => { if (enable()) onTouchStart(e) }
+  const move  = (e) => { if (enable()) onTouchMove(e) }
+  const end   = (e) => { if (enable()) onTouchEnd(e) }
+
+  document.addEventListener('touchstart', start, { passive: true })
+  document.addEventListener('touchmove',  move,  { passive: true })
+  document.addEventListener('touchend',   end,   { passive: true })
+  return () => {
+    document.removeEventListener('touchstart', start)
+    document.removeEventListener('touchmove',  move)
+    document.removeEventListener('touchend',   end)
+  }
+}, [])
+
+
   return (
-    <header className="sticky top-0 z-40 backdrop-blur supports-[backdrop-filter]:bg-white/70 bg-white/80 border-b">
+    <header className="sticky top-0 z-40 bg-white border-b">
       <div className="mx-auto max-w-6xl px-4 py-3 flex items-center justify-between">
         <div className="flex items-center gap-3">
           <Logo />
@@ -123,46 +182,83 @@ function Header({ onNav }) {
         </nav>
 
         {/* CTA desktop */}
-        <button onClick={() => go('reserva')} className="hidden md:inline-flex rounded-2xl bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 text-sm font-medium shadow-sm">
+        <button
+          onClick={() => go('reserva')}
+          className="hidden md:inline-flex rounded-2xl bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 text-sm font-medium shadow-sm"
+        >
           Reservar
         </button>
 
-        {/* Botón hamburguesa móvil */}
+        {/* Botón hamburguesa móvil (SVG con caja redondeada + 2 líneas) */}
         <button
-          className="md:hidden inline-flex items-center justify-center w-10 h-10 rounded-xl border bg-white"
+          className="md:hidden inline-flex items-center justify-center w-10 h-10"
           aria-label="Abrir menú"
+          aria-expanded={open}
+          aria-controls="mobile-menu"
           onClick={() => setOpen(true)}
         >
-          {/* tres rayitas */}
-          <span className="block w-6 h-px bg-slate-900 mb-1"></span>
-          <span className="block w-6 h-px bg-slate-900 mb-1"></span>
-          <span className="block w-6 h-px bg-slate-900"></span>
+          <svg width="28" height="28" viewBox="0 0 28 28" aria-hidden>
+            <rect x="1.5" y="1.5" width="25" height="25" rx="7" fill="none" stroke="#0f172a" strokeWidth="1.5"/>
+            <rect x="6" y="10" width="16" height="1.8" rx="0.9" fill="#0f172a"/>
+            <rect x="6" y="16" width="16" height="1.8" rx="0.9" fill="#0f172a"/>
+          </svg>
         </button>
       </div>
 
-      {/* Menú móvil (overlay) */}
+      {/* Overlay + Panel móvil (sólido, sin transparencias) */}
       {open && (
-        <div className="md:hidden fixed inset-0 z-50">
-          <div className="absolute inset-0 bg-black/40" onClick={() => setOpen(false)} aria-hidden="true"></div>
-          <div className="ml-auto h-full w-72 bg-white shadow-xl p-5 flex flex-col gap-2">
-            <div className="flex items-center justify-between mb-2">
+        <div className="md:hidden fixed inset-0 z-50" role="dialog" aria-modal="true">
+          {/* Capa oscura más opaca para evitar ver el contenido detrás */}
+          <div
+            className="absolute inset-0 bg-black/60"
+            onClick={() => setOpen(false)}
+            aria-hidden="true"
+          />
+          {/* Panel deslizante */}
+          <div
+            id="mobile-menu"
+            className="
+              relative ml-auto h-full w-72 max-w-[85%]
+              bg-white shadow-2xl border-l
+              flex flex-col
+              translate-x-0
+              overflow-y-auto overscroll-contain
+            "
+          >
+            <div className="sticky top-0 bg-white border-b px-5 py-3 flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <Logo />
                 <span className="font-semibold">Educando</span>
               </div>
-              <button className="w-9 h-9 grid place-items-center rounded-lg border" onClick={() => setOpen(false)} aria-label="Cerrar menú">✕</button>
+              <button
+                className="w-9 h-9 grid place-items-center rounded-lg border"
+                onClick={() => setOpen(false)}
+                aria-label="Cerrar menú"
+              >
+                ✕
+              </button>
             </div>
-            <button className="py-2 text-left hover:text-blue-700" onClick={() => go('nosotros')}>Quiénes somos</button>
-            <button className="py-2 text-left hover:text-blue-700" onClick={() => go('materias')}>Materias</button>
-            <button className="py-2 text-left hover:text-blue-700" onClick={() => go('precios')}>Precios</button>
-            <button className="py-2 text-left hover:text-blue-700" onClick={() => go('como-funciona')}>Cómo funciona</button>
-            <button className="mt-3 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 text-sm font-medium shadow" onClick={() => go('reserva')}>Reservar</button>
+
+            <nav className="px-5 py-3">
+              <button className="block w-full text-left py-3 hover:text-blue-700" onClick={() => go('nosotros')}>Quiénes somos</button>
+              <button className="block w-full text-left py-3 hover:text-blue-700" onClick={() => go('materias')}>Materias</button>
+              <button className="block w-full text-left py-3 hover:text-blue-700" onClick={() => go('precios')}>Precios</button>
+              <button className="block w-full text-left py-3 hover:text-blue-700" onClick={() => go('como-funciona')}>Cómo funciona</button>
+              <button
+                className="mt-4 w-full rounded-2xl bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 text-sm font-medium shadow"
+                onClick={() => go('reserva')}
+              >
+                Reservar
+              </button>
+            </nav>
           </div>
         </div>
       )}
     </header>
   )
 }
+
+
 
 
 function Logo({ size = 36 }) {
